@@ -1,0 +1,94 @@
+\documentclass[12pt]{article}
+%\usepackage{fullpage}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{paralist}
+\usepackage{graphicx}
+\usepackage{algorithm,algorithmic}
+\usepackage{tikz}
+\usepackage{xcolor,colortbl}
+\usepackage{wrapfig}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{listings}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is FULLPAGE.STY by H.Partl, Version 2 as of 15 Dec 1988.
+% Document Style Option to fill the paper just like Plain TeX.
+
+\typeout{Style Option FULLPAGE Version 2 as of 15 Dec 1988}
+
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+
+\textheight 8.9in
+
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+
+\textwidth 6.5in
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{empty}
+\setlength{\oddsidemargin}{0in}
+\setlength{\topmargin}{-0.8in}
+\setlength{\textwidth}{6.8in}
+\setlength{\textheight}{9.5in}
+
+
+\def\ind{\hspace*{0.3in}}
+\def\gap{0.1in}
+\def\bigap{0.25in}
+\newcommand{\Xomit}[1]{}
+\renewcommand\thesection{(\alph{section})}
+
+
+\begin{document}
+
+\setlength{\parindent}{0in}
+\addtolength{\parskip}{0.1cm}
+\setlength{\fboxrule}{.5mm}\setlength{\fboxsep}{1.2mm}
+\newlength{\boxlength}\setlength{\boxlength}{\textwidth}
+\addtolength{\boxlength}{-4mm}
+\begin{center}\framebox{\parbox{\boxlength}{{\bf
+CS 4820, Fall 2018 \hfill Homework 1, Problem 3}%\\
+%Collaborators:
+}}
+\end{center}
+\vspace{5mm}
+In this problem, we need to choose a port among each ship's schedule: the port that the corresponding ship will stay in the rest of the month. Similar to the propose-respond problem discussed in the class, we can simply set up a similar scenario, where ships are regarded as ``proposer" while ports are regarded as ``respondent". Each ship ranks each port in the chronological order as presented in the schedule; each port ranks each ship in the reverse chronological order as presented in the schedule. According to the class, there will always be a stable matching. Hence, now it is simple to prove such a set of truncations can always be found given the stable matching exists.\\\\
+\textbf{Proof} \\
+We can use contradictory: A ship $s_i$ gets to port $p_i$ after ship $s_j$ has already staying in $p_i$. In this case, since $s_i$ prefers $p_i$ to the port in its schedule (because it passes $p_i$ to its destination), and $p_i$ prefers $s_i$ to $s_j$ (rever chronological order), which indicates that $s_i$ should be matched with $p_i$ (i.e., $s_j$ should not be staying there), so it contradicts the stable matching assumption. Hence, we conclude that such a set of truncations can always be found.\\\\  
+The algorithm is stated as follow:
+\begin{algorithm}[H]
+\caption{Algorithm for problem 3}
+Regard ships $S$ as ``proposers" \\
+Regard ports $P$ as ``respondents"\\
+Each ship ranks each port in the chronological order as presented in the schedule\\
+Each port ranks each ship in the reverse chronological order as presented in the schedule\\
+Initially all $s\in S$ and $p\in P$ are unmatched\\
+\textbf{While} there is a ship $s$ that is unmatched and has not ``proposed" to every port\\
+\hspace*{10mm}Choose such a ship $s$\\
+\hspace*{10mm}Let $p$ be the highest-ranked port in $s$'s preference list which $s$ has not yet ``proposed"\\
+\hspace*{10mm}\textbf{If} $p$ is not matched then\\
+\hspace*{20mm}$(s,p)$ are matched\\
+\hspace*{10mm}\textbf{Else} $p$ is currently matched to $s'$\\
+\hspace*{20mm}\textbf{If} $p$ prefers $s'$ to $s$ then\\
+\hspace*{30mm}$s$ remains unmatched\\
+\hspace*{20mm}\textbf{Else} $p$ prefers $s$ to $s'$\\
+\hspace*{30mm}$(s,p)$ become matched\\
+\hspace*{30mm}$s'$ becomes unmatched\\
+\hspace*{20mm}\textbf{End if}\\
+\hspace*{10mm}\textbf{End if}\\
+\textbf{End while}\\
+Return the set S of matched pairs.
+\end{algorithm}
+\textbf{Time complexity analysis:}\\
+The complexity of one round is $O(1)$\\
+Observing each ship ``proposes" to each port no more than once\\
+$n$ ships $\times$ $n$ ports = $O(n^2)$
+
+\end{document}

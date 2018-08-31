@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+%\usepackage{fullpage}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{paralist}
+\usepackage{graphicx}
+\usepackage{algorithm,algorithmic}
+\usepackage{tikz}
+\usepackage{xcolor,colortbl}
+\usepackage{wrapfig}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{listings}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is FULLPAGE.STY by H.Partl, Version 2 as of 15 Dec 1988.
+% Document Style Option to fill the paper just like Plain TeX.
+
+\typeout{Style Option FULLPAGE Version 2 as of 15 Dec 1988}
+
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+
+\textheight 8.9in
+
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+
+\textwidth 6.5in
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{empty}
+\setlength{\oddsidemargin}{0in}
+\setlength{\topmargin}{-0.8in}
+\setlength{\textwidth}{6.8in}
+\setlength{\textheight}{9.5in}
+
+
+\def\ind{\hspace*{0.3in}}
+\def\gap{0.1in}
+\def\bigap{0.25in}
+\newcommand{\Xomit}[1]{}
+\renewcommand\thesection{(\alph{section})}
+
+
+\begin{document}
+
+\setlength{\parindent}{0in}
+\addtolength{\parskip}{0.1cm}
+\setlength{\fboxrule}{.5mm}\setlength{\fboxsep}{1.2mm}
+\newlength{\boxlength}\setlength{\boxlength}{\textwidth}
+\addtolength{\boxlength}{-4mm}
+\begin{center}\framebox{\parbox{\boxlength}{{\bf
+CS 4820, Fall 2018 \hfill Homework 1, Problem 2}%\\
+%Collaborators:
+}}
+\end{center}
+\vspace{5mm}
+
+\section{}
+According to the definition of ``stable match" described in the class, for any pairs of $(r,h)$:\\
+\begin{itemize}
+	\item $(r,h)$ are matched, which is case 1 in the problem statement
+	\item $(r,h')$ are matched and $r$ prefers $h'$ to $h$ or $(r',h)$ are matched and $h$ prefers $r'$ to $r$, which is case 2 in the problem statement
+\end{itemize}
+Hence, for any set of prospective residents and hospitals and any preference lists, all scenarios can be regarded as the cases of stable matching we learned from the class, which indicates stable matching.\\\\
+The algorithm is stated as follow:
+\begin{algorithm}[H]
+\caption{Algorithm for problem 2a}
+Initially all $r\in R$ have not applied and $h\in H$ have not receiced any applications\\
+\textbf{While} there is an unmatched prospective resident $r$ who has not applied to every hospital in his/her preference list\\
+\hspace*{10mm}Choose such a prospective resident $r$\\
+\hspace*{10mm}Let $h$ be the highest-ranked hospital in $r$'s preference list which $r$ has not yet applied\\
+\hspace*{10mm}\textbf{If} $h$ is not matched to anyone then\\
+\hspace*{20mm}$(r,h)$ are matched\\
+\hspace*{10mm}\textbf{Else} $h$ is currently matched to $r'$\\
+\hspace*{20mm}\textbf{If} $h$ prefers $r'$ to $r$ then\\
+\hspace*{30mm}$r$ remains unmatched\\
+\hspace*{20mm}\textbf{Else} $h$ prefers $r$ to $r'$\\
+\hspace*{30mm}$(r,h)$ become matched\\
+\hspace*{30mm}$r'$ becomes unmatched\\
+\hspace*{20mm}\textbf{End if}\\
+\hspace*{10mm}\textbf{End if}\\
+\textbf{End while}\\
+Return the set S of matched pairs.
+\end{algorithm}
+\textbf{Time complexity analysis:}\\
+The complexity of one round is $O(1)$\\
+Observing each apllicant applies to each hospital no more than once\\
+$n$ applicants $\times$ $m$ hospitals = $O(nm)$
+\section{}
+The answer is \textbf{yes}.\\\\
+\textbf{Example:}\\
+\includegraphics[width=12cm]{fig1.png} \\\\
+In this scenario, each applicant only has 1 preference (i.e., $k=1$). Since applicant $a, b$ only prefer $A$, given the rules, we can only get $a$ matched while $b$ remains unmatched. But if aplicants can apply hospitals other than there top $k$ choices, (i.e., $b$ can apply $B,C,D$ now), then in this case $b$ will be matched to $B$, which gives a better match.
+
+
+\end{document}
