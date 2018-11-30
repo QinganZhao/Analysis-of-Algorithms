@@ -237,25 +237,120 @@ public class Framework {
         }
 
 
-        objectR1 r1 = new objectR1(0,0,0);
-        objectR2 r2 = new objectR2(0,0,0);
+        // objV: Greedy algorithm using v
+
+        class objectV implements Comparable<objectV> {
+
+            private int value;
+            private int weight;
+            private int id;
+            private boolean[] pick = new boolean[n];
+
+            private objectV(int value, int weight, int id) {
+                this.value = value;
+                this.weight = weight;
+                this.id = id;
+            }
+
+            // Greedy algorithm implementation
+
+            public Object[] greedy(objectV[] objectList, int weightLimit, int id, int i) {
+
+                int value = 0;
+                int weight = weightLimit;
+                int j = 0;
+                int valuePrev = objectList[i].value;
+                int weightPrev = objectList[i].weight;
+                boolean values[] = new boolean[n];
+                values[id] = true;
+                objectList[i].weight = 0;
+                objectList[i].value = 0;
+
+                while (weight >= 0 && j < objectList.length) {
+
+                    if (objectList[j].weight <= weight) {
+                        value += objectList[j].value;
+                        weight -= objectList[j].weight;
+                        values[objectList[j].id] = true;
+                        j += 1;
+                    }
+
+                    else {
+                        objectList[i].value = valuePrev;
+                        objectList[i].weight = weightPrev;
+                        break;
+                    }
+
+                }
+                return new Object[] {value, values};
+            }
+
+
+            // Find the optimal solution
+
+            public int opt(objectV[] objectList, int weightLimit) {
+                int max = -1;
+                for (int i = 0; i < objectList.length; i++) {
+                    Object[] greedyResult = this.greedy(objectList, weightLimit - objectList[i].weight,
+                            objectList[i].id, i);
+                    if (objectList[i].value + (int) greedyResult[0] > max) {
+                        this.pick = (boolean[]) greedyResult[1];
+                        max = objectList[i].value +  (int) greedyResult[0];
+                    }
+                }
+                return max;
+            }
+
+            // Comparing based on value (v)
+
+            @Override
+            public int compareTo(objectV object) {
+
+                if (value < object.value) {
+                    return 1;
+                }
+                else if (value == object.value) {
+                    return 0;
+                }
+                else {
+                    return -1;
+                }
+
+            }
+
+        }
+
+
+
+        objectR1 r1 = new objectR1(0, 0, 0);
+        objectR2 r2 = new objectR2(0, 0, 0);
+        objectV v = new objectV(0, 0, 0);
         objectR1[] r1s = new objectR1[n];
         objectR2[] r2s = new objectR2[n];
+        objectV[] vs = new objectV[n];
 
         for (int i = 0; i < n; i++) {
             r1s[i] = new objectR1(values[i], weights[i], i);
             r2s[i] = new objectR2(values[i], weights[i], i);
+            vs[i] = new objectV(values[i], weights[i], i);
         }
 
         Arrays.sort(r1s);
         Arrays.sort(r2s);
+        Arrays.sort(vs);
 
-        if (r1.opt(r1s, weight_limit) > r2.opt(r2s, weight_limit)) {
+        if (r1.opt(r1s, weight_limit) >= r2.opt(r2s, weight_limit) &&
+                r1.opt(r1s, weight_limit) >= v.opt(vs, weight_limit)) {
             picked = r1.pick;
         }
 
-        else {
+        else if (r2.opt(r2s, weight_limit) >= v.opt(vs, weight_limit) &&
+                r2.opt(r2s, weight_limit) >= r1.opt(r1s, weight_limit)) {
             picked = r2.pick;
+        }
+
+        else {
+            picked = v.pick;
         }
 
         // YOUR CODE ENDS HERE
